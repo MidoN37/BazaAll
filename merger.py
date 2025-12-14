@@ -1,5 +1,4 @@
 import os
-import requests
 import re
 from fpdf import FPDF
 
@@ -8,15 +7,7 @@ from fpdf import FPDF
 SOURCE_DIR = os.path.join("Українська", "Крок Б", "Лабораторна діагностика")
 OUTPUT_DIR = os.path.join("Українська", "Крок Б")
 OUTPUT_FILENAME = "Merged_Lab_Diagnostics"
-FONT_URL = "https://github.com/google/fonts/raw/main/ofl/notosans/NotoSans-Regular.ttf"
-FONT_FILE = "NotoSans-Regular.ttf"
-
-def download_font():
-    if not os.path.exists(FONT_FILE):
-        print("Downloading font...")
-        r = requests.get(FONT_URL)
-        with open(FONT_FILE, 'wb') as f:
-            f.write(r.content)
+FONT_FILE = "DejaVuSans.ttf"  # Using the local file you uploaded
 
 def clean_text(text):
     # Normalize characters for PDF
@@ -52,6 +43,12 @@ def main():
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
 
+    # Check for font file
+    if not os.path.exists(FONT_FILE):
+        print(f"Error: Font file '{FONT_FILE}' not found in the root directory.")
+        print("Available files:", os.listdir())
+        return
+
     txt_files = []
     for root, dirs, files in os.walk(SOURCE_DIR):
         for file in files:
@@ -81,16 +78,17 @@ def main():
 
     print(f"Total unique questions found: {len(unique_questions)}")
 
-    download_font()
     pdf = FPDF()
     pdf.add_page()
-    pdf.add_font('NotoSans', '', FONT_FILE)
-    pdf.set_font('NotoSans', '', 10)
+    
+    # Register the local font
+    pdf.add_font('DejaVu', '', FONT_FILE)
+    pdf.set_font('DejaVu', '', 10)
 
     full_txt_content = ""
 
     # Title
-    pdf.set_font('NotoSans', '', 16)
+    pdf.set_font('DejaVu', '', 16)
     pdf.cell(0, 10, f"Merged Database: {len(unique_questions)} Questions", ln=True, align='C')
     pdf.ln(10)
 
@@ -99,14 +97,14 @@ def main():
         full_txt_content += formatted_block
         
         # PDF Formatting
-        pdf.set_font('NotoSans', '', 11)
+        pdf.set_font('DejaVu', '', 11)
         lines = q_content.split('\n')
         question_body = lines[0]
         options = lines[1:]
         
         pdf.multi_cell(0, 6, clean_text(f"{index}. {question_body}"))
         
-        pdf.set_font('NotoSans', '', 10)
+        pdf.set_font('DejaVu', '', 10)
         for opt in options:
             pdf.multi_cell(0, 5, clean_text(opt))
         
@@ -125,9 +123,6 @@ def main():
         print(f"Generated PDF: {pdf_out}")
     except Exception as e:
         print(f"Error saving PDF: {e}")
-
-    if os.path.exists(FONT_FILE):
-        os.remove(FONT_FILE)
 
 if __name__ == "__main__":
     main()
