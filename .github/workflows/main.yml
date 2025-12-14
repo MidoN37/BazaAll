@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'BazaAll/Українська/Крок Б/Лабораторна діагностика/**'
-      - 'merger.py'  # Updated to watch your specific file
+      - 'Українська/Крок Б/Лабораторна діагностика/**'
+      - 'merger.py'
 
 permissions:
   contents: write
@@ -27,13 +27,13 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Merge Script
-        run: python merger.py  # Updated to run your specific file
+        run: python merger.py
 
       - name: Commit and Push changes
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add "BazaAll/Українська/Крок Б/Merged_Lab_Diagnostics.txt"
-          git add "BazaAll/Українська/Крок Б/Merged_Lab_Diagnostics.pdf"
+          git add "Українська/Крок Б/Merged_Lab_Diagnostics.txt"
+          git add "Українська/Крок Б/Merged_Lab_Diagnostics.pdf"
           # Commit only if changes exist
           git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-merge Krok B files" && git push)
