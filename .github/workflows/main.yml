@@ -1,11 +1,11 @@
 name: Merge Krok B Files
 
 on:
-  workflow_dispatch: # Allows manual trigger button
+  workflow_dispatch:
   push:
     paths:
       - 'BazaAll/Українська/Крок Б/Лабораторна діагностика/**'
-      - 'merge_script.py'
+      - 'merger.py'  # Updated to watch your specific file
 
 permissions:
   contents: write
@@ -27,7 +27,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Merge Script
-        run: python merge_script.py
+        run: python merger.py  # Updated to run your specific file
 
       - name: Commit and Push changes
         run: |
